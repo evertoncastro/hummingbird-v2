@@ -53,24 +53,4 @@ class TestDataApi(TestCase):
             'deaths': '8'
         })
 
-    def test_return_cases_by_search_city(self):
-        # Seed test data
-        State().save(self.db.session, abbreviation='SP', name='São Paulo',
-                     lat=12.0001, lng=25.0001)
-        City().save(
-            self.db.session, id=1, city="c1", state_id=1,
-            country="c1", totalcases=20, deaths=1)
-        City().save(
-            self.db.session, id=2, city="c2", state_id=2,
-            country="c1", totalcases=20, deaths=1)
-        self.db.session.commit()
 
-        resp = self.client.get(
-            '/data_api/v1/cases/city/c1/report',
-            headers={
-                'Authorization': f"Bearer {self.authentication['access_token']}"
-            }
-        )
-        data = json.loads(resp.get_data())
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data, [{'city': 'c1', 'state': 'São Paulo', 'cases': {'totalCases': 20, 'deaths': 1}}])
